@@ -1,1 +1,11 @@
-# Placeholder dashboards provisioning
+apiVersion: 1
+
+providers:
+  - name: "SLM Hosting"
+    orgId: 1
+    folder: "SLM Hosting"
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards/dashboards
