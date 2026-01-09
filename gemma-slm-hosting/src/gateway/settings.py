@@ -1,0 +1,1 @@
+"""Gateway settings placeholder."""
