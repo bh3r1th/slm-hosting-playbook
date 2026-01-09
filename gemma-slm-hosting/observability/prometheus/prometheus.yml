@@ -1,1 +1,16 @@
-# Placeholder Prometheus config
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "gateway"
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "gateway:8000"
+
+  - job_name: "vllm"
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "vllm:8001"
