@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+
+# Editors
+.vscode/
+.idea/
+
+# Data/results
+*.log
+*.jsonl
+*.csv
+*.parquet
+results/
+loadtest/reports/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
