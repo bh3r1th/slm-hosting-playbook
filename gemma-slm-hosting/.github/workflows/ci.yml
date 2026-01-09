@@ -5,7 +5,25 @@ on:
   pull_request:
 
 jobs:
-  placeholder:
+  lint-test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "CI placeholder"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --frozen --all-extras
+      - name: Format check
+        run: uv run ruff format --check .
+      - name: Lint
+        run: make lint
+      - name: Test
+        run: make test
+      - name: Validate docker-compose config
+        run: |
+          docker compose -f compose/docker-compose.yml config
+          docker compose -f compose/docker-compose.observability.yml config
