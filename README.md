@@ -1,40 +1,25 @@
 # slm-hosting-playbook
 
-A practical, open-source playbook for learning and benchmarking **self-hosted Small Language Model (SLM) serving** end-to-end.
+A practical, open-source playbook for learning and benchmarking **self-hosted Small Language Model (SLM) serving** end-to-end — including **training + hosting**.
 
-This repo is intentionally **hands-on**: it focuses on building a runnable serving stack, measuring real latency (P50/P95/P99), stress testing under load, and packaging everything so it’s reproducible. No fluff.
+This repo is intentionally hands-on: build, measure, stress test, and package everything so it’s reproducible. No fluff.
 
-## What’s in this repo
+## Phase-based approach
 
-### Projects
-- **`gemma-slm-hosting/`** — A complete starter stack for hosting **Google Gemma** with:
-  - model serving (vLLM)
-  - a simple API gateway
-  - observability (Prometheus + Grafana + tracing)
-  - load testing harness (Locust)
-  - scripts + configs to run benchmarks and capture results
+### Phase 1 — Training (Blog Part 1)
+Fine-tune a Gemma checkpoint on a public dataset and produce versioned model artifacts ready for serving.
 
-## Why this repo exists
+📁 See: [`gemma-slm-training/`](./gemma-slm-training/)
 
-Most “self-hosting” content stops at “it runs.” This playbook is about the next step:
-- **Does it stay up under bursty traffic?**
-- **What happens to P95/P99 and TTFT when prompts get longer?**
-- **Which knobs actually move tail latency and throughput?**
-- **How do you make the setup reproducible for others?**
+### Phase 2 — Hosting & Benchmarking (Blog Part 2)
+Serve the base Gemma model and the fine-tuned model, add observability, and run load tests to measure tail latency and throughput.
 
-## How to use it
+📁 See: [`gemma-slm-hosting/`](./gemma-slm-hosting/)
 
-Start here:
-- Go to **[`gemma-slm-hosting/`](./gemma-slm-hosting/)** and follow its README.
+## Repo structure
 
-As you add more SLM hosting projects (different models / runtimes / hardware), this repo becomes your consolidated “playbook” with repeatable patterns.
-
-## Guiding principles
-
-- **Open-source first**
-- **Measure everything that matters** (tail latency, TTFT, throughput, error rate)
-- **Reproducible experiments** (scripts + configs + pinned deps)
-- **Document what breaks** (gotchas > marketing)
+- `gemma-slm-training/` — training + evaluation + export artifacts (Part 1)
+- `gemma-slm-hosting/` — serving + observability + load testing (Part 2)
 
 ## License
 
