@@ -1,1 +1,38 @@
-# Placeholder observability compose file
+version: "3.9"
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ../observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - slm-net
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ../observability/grafana:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - slm-net
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.57
+    ports:
+      - "16686:16686"
+    networks:
+      - slm-net
+
+networks:
+  slm-net:
+    name: slm-net
+    driver: bridge
+
+volumes:
+  grafana-data:
+  prometheus-data:
