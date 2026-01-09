@@ -16,6 +16,10 @@ __pycache__/
 *.parquet
 results/
 loadtest/reports/
+!loadtest/reports/
+!loadtest/workloads/
+!loadtest/workloads/*.jsonl
+!loadtest/reports/.gitkeep
 
 # Notebooks
 .ipynb_checkpoints/
