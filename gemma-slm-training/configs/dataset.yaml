@@ -1,0 +1,5 @@
+dataset_name: OpenAssistant/oasst1
+model_name: google/gemma-3-1b-it
+output_dir: artifacts
+max_train_samples: 50000
+max_val_samples: 2000
