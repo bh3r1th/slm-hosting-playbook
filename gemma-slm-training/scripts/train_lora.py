@@ -15,8 +15,8 @@ from hf_auth import main as hf_login
 
 def _format_examples(batch: Dict[str, List[str]]) -> Dict[str, List[str]]:
     prompts = batch["prompt"]
-    responses = batch["response"]
-    texts = [f"User: {p}\nAssistant: {r}" for p, r in zip(prompts, responses)]
+    completions = batch["completion"]
+    texts = [f"User: {p}\nAssistant: {c}" for p, c in zip(prompts, completions)]
     return {"text": texts}
 
 

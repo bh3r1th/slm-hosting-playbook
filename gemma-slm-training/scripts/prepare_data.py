@@ -52,10 +52,10 @@ def _build_pairs(ds: Dataset) -> List[Dict[str, str]]:
         if not parent or not _is_user_role(parent.get("role")):
             continue
         prompt = parent.get("text")
-        response = row.get("text")
-        if not prompt or not response:
+        completion = row.get("text")
+        if not prompt or not completion:
             continue
-        pairs.append({"prompt": prompt, "response": response})
+        pairs.append({"prompt": prompt, "completion": completion})
     return pairs
 
 
