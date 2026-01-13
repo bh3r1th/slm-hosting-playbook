@@ -7,8 +7,8 @@ from typing import Dict, List
 import torch
 from datasets import load_dataset
 from peft import LoraConfig, prepare_model_for_kbit_training
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
-from trl import SFTTrainer
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from trl import SFTConfig, SFTTrainer
 
 from hf_auth import main as hf_login
 
@@ -84,25 +84,21 @@ def _setup_tokenizer(model_id: str):
 
 
 def _training_args(output_dir: str, epochs: int, lr: float, max_seq_len: int, run_name: str):
-    report_to = ["wandb"] if os.getenv("WANDB_PROJECT") else []
-    return TrainingArguments(
+    report_to = ["wandb"] if os.getenv("WANDB_PROJECT") else "none"
+    return SFTConfig(
         output_dir=output_dir,
         num_train_epochs=epochs,
         per_device_train_batch_size=1,
-        per_device_eval_batch_size=1,
         gradient_accumulation_steps=4,
         learning_rate=lr,
+        max_seq_length=max_seq_len,
         logging_steps=25,
         eval_strategy="steps",
-        eval_steps=200,
-        save_strategy="steps",
         save_steps=200,
-        save_total_limit=2,
         fp16=torch.cuda.is_available(),
         bf16=torch.cuda.is_available(),
         report_to=report_to,
         run_name=run_name,
-        max_steps=-1,
     )
 
 
@@ -144,8 +140,6 @@ def main() -> None:
         processing_class=tokenizer,
         train_dataset=train_ds,
         eval_dataset=val_ds,
-        dataset_text_field="text",
-        max_seq_length=args.max_seq_len,
         peft_config=peft_config,
         args=_training_args(output_dir, args.epochs, args.learning_rate, args.max_seq_len, run_name),
     )
