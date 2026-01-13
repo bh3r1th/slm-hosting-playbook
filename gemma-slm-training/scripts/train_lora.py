@@ -85,6 +85,17 @@ def _setup_tokenizer(model_id: str):
 
 def _training_args(output_dir: str, epochs: int, lr: float, max_seq_len: int, run_name: str):
     report_to = ["wandb"] if os.getenv("WANDB_PROJECT") else "none"
+    if torch.cuda.is_available():
+        major_cc, _ = torch.cuda.get_device_capability(0)
+        if major_cc >= 8:
+            fp16 = False
+            bf16 = True
+        else:
+            fp16 = True
+            bf16 = False
+    else:
+        fp16 = False
+        bf16 = False
     return SFTConfig(
         output_dir=output_dir,
         num_train_epochs=epochs,
@@ -95,8 +106,8 @@ def _training_args(output_dir: str, epochs: int, lr: float, max_seq_len: int, ru
         logging_steps=25,
         eval_strategy="steps",
         save_steps=200,
-        fp16=torch.cuda.is_available(),
-        bf16=torch.cuda.is_available(),
+        fp16=fp16,
+        bf16=bf16,
         report_to=report_to,
         run_name=run_name,
     )
