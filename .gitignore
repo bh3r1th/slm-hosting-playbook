@@ -6,8 +6,8 @@ __pycache__/
 .env
 
 # data / datasets
-data/
-**/data/*
+# data/
+# **/data/*
 !**/data/.gitkeep
 
 # training artifacts / checkpoints
