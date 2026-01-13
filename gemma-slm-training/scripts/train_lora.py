@@ -91,7 +91,7 @@ def _training_args(output_dir: str, epochs: int, lr: float, max_seq_len: int, ru
         per_device_train_batch_size=1,
         gradient_accumulation_steps=4,
         learning_rate=lr,
-        max_seq_length=max_seq_len,
+        max_length=max_seq_len,
         logging_steps=25,
         eval_strategy="steps",
         save_steps=200,
