@@ -1,0 +1,2 @@
+ADAPTER_PATH=/content/drive/MyDrive/slm-hosting-playbook-artifacts/live_backup/gemma-3-1b-it-lora-20260114-034307
+BASE_MODEL_ID=google/gemma-3-1b-it

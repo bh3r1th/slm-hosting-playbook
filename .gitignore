@@ -29,3 +29,6 @@ wandb/
 results/
 **/results/*
 !**/results/.gitkeep
+
+# training pointers
+gemma-slm-training/PHASE2_MODEL_POINTER.txt

@@ -16,6 +16,9 @@ Serve the base Gemma model and the fine-tuned model, add observability, and run 
 
 📁 See: [`gemma-slm-hosting/`](./gemma-slm-hosting/)
 
+### Phase 2: Hosting (vLLM)
+See: [gemma-slm-hosting/README.md](./gemma-slm-hosting/README.md)
+
 ## Repo structure
 
 - `gemma-slm-training/` — training + evaluation + export artifacts (Part 1)
@@ -24,3 +27,4 @@ Serve the base Gemma model and the fine-tuned model, add observability, and run 
 ## License
 
 See [LICENSE](./LICENSE).
+

@@ -1,26 +1,34 @@
-# Phase 2 — Gemma SLM Hosting & Benchmarking (Blog Part 2)
+# Intent
 
-Minimal scaffold for hosting and benchmarking Gemma-style small language models with a gateway, load testing, and observability components.
+Minimal scripts to launch Gemma vLLM servers and validate them quickly.
+Includes a base model path and an optional LoRA adapter path.
 
-## Inputs
+# Setup
 
-This phase can serve:
-- The base Gemma checkpoint, and/or
-- The fine-tuned artifacts produced in Phase 1
+- copy `.env.example` -> `.env`
+- set `HF_TOKEN`
+- set `ADAPTER_PATH` (local path OR Drive path in Colab)
 
-Phase 1 folder:
-- [`../gemma-slm-training/`](../gemma-slm-training/)
+# Run base
 
-## Outputs
+```bash
+bash scripts/start_base_vllm.sh
+```
 
-- Serving configs used for runs
-- Load test reports
-- Tail-latency and throughput results saved under `results/`
+# Run finetuned
 
-## Run
+```bash
+bash scripts/start_ft_vllm.sh
+```
 
-## Observability
+# Smoke test
 
-## Load Test
+```bash
+python scripts/smoke_test.py
+```
 
-## Results
+# Benchmark
+
+```bash
+python scripts/benchmark.py --n 50
+```
