@@ -11,6 +11,19 @@ fi
 
 eval "$(python "$script_dir/read_pointer.py")"
 
+: "${VLLM_HOST:=0.0.0.0}"
+: "${VLLM_PORT_BASE:=8000}"
+: "${VLLM_PORT_FT:=8001}"
+: "${GPU_MEMORY_UTILIZATION:=0.90}"
+: "${MAX_MODEL_LEN:=2048}"
+: "${TENSOR_PARALLEL_SIZE:=1}"
+: "${DTYPE:=auto}"
+
+if ! [[ "$VLLM_PORT_BASE" =~ ^[0-9]+$ ]]; then
+  echo "Invalid VLLM_PORT_BASE='$VLLM_PORT_BASE'" >&2
+  exit 1
+fi
+
 python -m vllm.entrypoints.openai.api_server \
   --model "$BASE_MODEL_ID" \
   --port "$VLLM_PORT_BASE" \

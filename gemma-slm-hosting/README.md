@@ -6,6 +6,7 @@ Includes a base model path and an optional LoRA adapter path.
 # Setup
 
 - copy `.env.example` -> `.env`
+- do not commit `.env`
 - set `HF_TOKEN`
 - set `ADAPTER_PATH` (local path OR Drive path in Colab)
 

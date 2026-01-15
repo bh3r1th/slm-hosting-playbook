@@ -4,6 +4,7 @@ __pycache__/
 *.egg-info/
 .venv/
 .env
+gemma-slm-hosting/.env
 
 # data / datasets
 # data/
