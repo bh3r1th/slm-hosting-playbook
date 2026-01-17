@@ -13,8 +13,8 @@ def _load_env() -> None:
         load_dotenv(env_path)
 
 
-def _wait_ready(api_url: str, timeout_seconds: int) -> None:
-    url = f"{api_url}/v1/models"
+def _wait_ready(models_url: str, timeout_seconds: int) -> None:
+    url = models_url
     deadline = time.time() + timeout_seconds
     while time.time() < deadline:
         try:
@@ -27,8 +27,8 @@ def _wait_ready(api_url: str, timeout_seconds: int) -> None:
     raise RuntimeError(f"Server not ready at {url} after {timeout_seconds}s")
 
 
-def _post_chat(api_url: str, model_name: str, prompt: str) -> str:
-    url = f"{api_url}/v1/chat/completions"
+def _post_chat(chat_url: str, model_name: str, prompt: str) -> str:
+    url = chat_url
     payload = {
         "model": model_name,
         "messages": [{"role": "user", "content": prompt}],
@@ -41,8 +41,8 @@ def _post_chat(api_url: str, model_name: str, prompt: str) -> str:
     return data["choices"][0]["message"]["content"].strip()
 
 
-def _fetch_first_model(api_url: str, timeout_seconds: int) -> str:
-    url = f"{api_url}/v1/models"
+def _fetch_first_model(models_url: str, timeout_seconds: int) -> str:
+    url = models_url
     response = requests.get(url, timeout=timeout_seconds)
     response.raise_for_status()
     data = response.json()
@@ -53,6 +53,9 @@ def _fetch_first_model(api_url: str, timeout_seconds: int) -> str:
 
 
 def _normalize_api_url(url: str) -> str:
+    url = url.strip()
+    if url.endswith("/v1"):
+        url = url[: -len("/v1")]
     return url.rstrip("/")
 
 
@@ -102,22 +105,31 @@ def main() -> None:
         args.ft_api_url or _fallback_api_url(host, port_ft)
     )
 
+    base_models_url = f"{base_api_url}/v1/models"
+    base_chat_url = f"{base_api_url}/v1/chat/completions"
+    ft_models_url = f"{ft_api_url}/v1/models"
+    ft_chat_url = f"{ft_api_url}/v1/chat/completions"
+
     if args.model:
         base_model = args.model
         ft_model = args.model
     else:
-        base_model = _fetch_first_model(base_api_url, args.timeout_seconds)
+        base_model = _fetch_first_model(base_models_url, args.timeout_seconds)
         if args.mode in {"ft", "both"}:
-            ft_model = _fetch_first_model(ft_api_url, args.timeout_seconds)
+            ft_model = _fetch_first_model(ft_models_url, args.timeout_seconds)
 
     if args.mode in {"base", "both"}:
-        _wait_ready(base_api_url, args.timeout_seconds)
-        base_text = _post_chat(base_api_url, base_model, prompt)
+        print(f"BASE models_url={base_models_url}")
+        print(f"BASE chat_url={base_chat_url}")
+        _wait_ready(base_models_url, args.timeout_seconds)
+        base_text = _post_chat(base_chat_url, base_model, prompt)
         print(f"BASE: {base_text}")
 
     if args.mode in {"ft", "both"}:
-        _wait_ready(ft_api_url, args.timeout_seconds)
-        ft_text = _post_chat(ft_api_url, ft_model, prompt)
+        print(f"FT models_url={ft_models_url}")
+        print(f"FT chat_url={ft_chat_url}")
+        _wait_ready(ft_models_url, args.timeout_seconds)
+        ft_text = _post_chat(ft_chat_url, ft_model, prompt)
         print(f"FT: {ft_text}")
 
 

@@ -37,8 +37,15 @@ def _load_prompts(path: Path) -> list[dict[str, Any]]:
     return prompts
 
 
+def _normalize_url(url: str) -> str:
+    url = url.strip()
+    if url.endswith("/v1"):
+        url = url[: -len("/v1")]
+    return url.rstrip("/")
+
+
 def _fetch_first_model(client: httpx.Client, api_url: str, timeout: int) -> str:
-    response = client.get(f"{api_url}/models", timeout=timeout)
+    response = client.get(f"{api_url}/v1/models", timeout=timeout)
     response.raise_for_status()
     data = response.json()
     models = data.get("data", [])
@@ -65,7 +72,7 @@ def _chat(
     started = time.perf_counter()
     try:
         response = client.post(
-            f"{api_url}/chat/completions",
+            f"{api_url}/v1/chat/completions",
             json=payload,
             timeout=timeout,
         )
@@ -125,8 +132,8 @@ def main() -> None:
     out_path = _resolve_out_path(args.out, args.out_dir)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    base_url = args.base_url.rstrip("/")
-    ft_url = args.ft_url.rstrip("/")
+    base_url = _normalize_url(args.base_url)
+    ft_url = _normalize_url(args.ft_url)
     if not base_url or not ft_url:
         raise ValueError("BASE_API_URL and FT_API_URL must be set")
 

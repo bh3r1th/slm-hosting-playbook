@@ -35,7 +35,7 @@ check_endpoint() {
   local ok=1
 
   local status
-  status="$(curl -sS -o /dev/null -w "%{http_code}" "$api_url/models" || true)"
+  status="$(curl -sS -o /dev/null -w "%{http_code}" "$api_url/v1/models" || true)"
   if [ "$status" != "200" ]; then
     echo "FAIL $name models $status"
     return 1
@@ -46,7 +46,7 @@ check_endpoint() {
   status="$(curl -sS -o /dev/null -w "%{http_code}" \
     -H "Content-Type: application/json" \
     -d "$body" \
-    "$api_url/chat/completions" || true)"
+    "$api_url/v1/chat/completions" || true)"
   if [ "$status" != "200" ]; then
     echo "FAIL $name chat $status"
     return 1

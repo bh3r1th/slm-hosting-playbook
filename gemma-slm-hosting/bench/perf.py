@@ -10,10 +10,10 @@ import httpx
 
 
 def _normalize_url(url: str) -> str:
-    url = url.rstrip("/")
-    if not url.endswith("/v1"):
-        url = f"{url}/v1"
-    return url
+    url = url.strip()
+    if url.endswith("/v1"):
+        url = url[: -len("/v1")]
+    return url.rstrip("/")
 
 
 def _load_prompts(path: Path) -> list[dict[str, Any]]:
@@ -48,7 +48,7 @@ def _percentile(values: list[float], pct: float) -> float:
 async def _fetch_first_model(
     client: httpx.AsyncClient, api_url: str, timeout: int
 ) -> str:
-    response = await client.get(f"{api_url}/models", timeout=timeout)
+    response = await client.get(f"{api_url}/v1/models", timeout=timeout)
     response.raise_for_status()
     data = response.json()
     models = data.get("data", [])
@@ -89,7 +89,7 @@ async def _run_perf(
                 t0 = time.perf_counter()
                 try:
                     response = await client.post(
-                        f"{api_url}/chat/completions",
+                        f"{api_url}/v1/chat/completions",
                         json=payload,
                         timeout=timeout,
                     )
