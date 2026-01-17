@@ -7,8 +7,20 @@ Includes a base model path and an optional LoRA adapter path.
 
 - copy `.env.example` -> `.env`
 - do not commit `.env`
-- set `HF_TOKEN`
 - set `ADAPTER_PATH` (local path OR Drive path in Colab)
+
+# Colab Run (Minimal)
+
+- mount Drive
+- Runtime → Change runtime type → GPU
+- copy `.env.example` -> `.env` and set `ADAPTER_PATH`
+- if OOM, reduce `MAX_NUM_SEQS`, `MAX_MODEL_LEN`, or `GPU_MEMORY_UTILIZATION` in `.env`
+- `make setup`
+- `make start-both`
+- `make health`
+- `make smoke MODE=both`
+- `make ab PROMPTS=data/prompts.jsonl OUT=runs/ab`
+- `make perf`
 
 # Run base
 
@@ -32,4 +44,10 @@ python scripts/smoke_test.py
 
 ```bash
 python scripts/benchmark.py --n 50
+```
+
+# A/B Eval
+
+```bash
+python eval/ab_eval.py --prompts data/prompts.jsonl --out-dir runs/ab
 ```

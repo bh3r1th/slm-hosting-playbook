@@ -5,6 +5,11 @@ __pycache__/
 .venv/
 .env
 gemma-slm-hosting/.env
+*.log
+
+# build artifacts
+dist/
+build/
 
 # data / datasets
 # data/
@@ -30,6 +35,20 @@ wandb/
 results/
 **/results/*
 !**/results/.gitkeep
+
+# runs / logs / snapshots
+runs/
+*.tar.gz
+
+# notebooks
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# HF cache (optional)
+.cache/huggingface/
+**/.cache/huggingface/
 
 # training pointers
 gemma-slm-training/PHASE2_MODEL_POINTER.txt
