@@ -3,6 +3,7 @@ import os
 import sys
 import time
 from pathlib import Path
+
 import requests
 from dotenv import load_dotenv
 
@@ -18,7 +19,7 @@ def _wait_ready(models_url: str, timeout_seconds: int) -> None:
     deadline = time.time() + timeout_seconds
     while time.time() < deadline:
         try:
-            response = requests.get(url, timeout=5)
+            response = requests.get(url, timeout=10)
             if response.ok:
                 return
         except requests.RequestException:
@@ -32,24 +33,19 @@ def _post_chat(chat_url: str, model_name: str, prompt: str) -> str:
     payload = {
         "model": model_name,
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.2,
-        "max_tokens": 128,
+        "temperature": 0,
+        "max_tokens": 32,
     }
-    response = requests.post(url, json=payload, timeout=30)
-    response.raise_for_status()
+    print("chat_method=POST")
+    print(f"chat_model={payload['model']}")
+    response = requests.post(url, json=payload, timeout=10)
+    if not response.ok:
+        snippet = response.text[:300]
+        print(f"status={response.status_code}")
+        print(f"body={snippet}")
+        response.raise_for_status()
     data = response.json()
     return data["choices"][0]["message"]["content"].strip()
-
-
-def _fetch_first_model(models_url: str, timeout_seconds: int) -> str:
-    url = models_url
-    response = requests.get(url, timeout=timeout_seconds)
-    response.raise_for_status()
-    data = response.json()
-    models = data.get("data", [])
-    if not models:
-        raise RuntimeError(f"No models returned from {url}")
-    return models[0]["id"]
 
 
 def _normalize_api_url(url: str) -> str:
@@ -80,9 +76,7 @@ def main() -> None:
         type=int,
         default=int(os.getenv("FT_PORT", os.getenv("VLLM_PORT_FT", "8001"))),
     )
-    parser.add_argument(
-        "--model", default=os.getenv("BASE_MODEL_ID", "google/gemma-3-1b-it")
-    )
+    parser.add_argument("--model")
     parser.add_argument("--base-api-url", default=os.getenv("BASE_API_URL", ""))
     parser.add_argument("--ft-api-url", default=os.getenv("FT_API_URL", ""))
     parser.add_argument(
@@ -95,8 +89,9 @@ def main() -> None:
     host = args.host
     port_base = args.port_base
     port_ft = args.port_ft
-    ft_model = os.getenv("FT_SERVED_MODEL_NAME", "ft")
-    prompt = "Say hello in one short sentence."
+    base_model = os.getenv("BASE_MODEL_ID", "google/gemma-3-1b-it")
+    ft_model = os.getenv("SERVED_MODEL_NAME", os.getenv("FT_SERVED_MODEL_NAME", "ft"))
+    prompt = "Hello there!"
 
     base_api_url = _normalize_api_url(
         args.base_api_url or _fallback_api_url(host, port_base)
@@ -110,26 +105,20 @@ def main() -> None:
     ft_models_url = f"{ft_api_url}/v1/models"
     ft_chat_url = f"{ft_api_url}/v1/chat/completions"
 
-    if args.model:
-        base_model = args.model
-        ft_model = args.model
-    else:
-        base_model = _fetch_first_model(base_models_url, args.timeout_seconds)
-        if args.mode in {"ft", "both"}:
-            ft_model = _fetch_first_model(ft_models_url, args.timeout_seconds)
-
     if args.mode in {"base", "both"}:
-        print(f"BASE models_url={base_models_url}")
-        print(f"BASE chat_url={base_chat_url}")
+        print("MODE=base")
+        print(f"models_url={base_models_url}")
+        print(f"chat_url={base_chat_url}")
         _wait_ready(base_models_url, args.timeout_seconds)
-        base_text = _post_chat(base_chat_url, base_model, prompt)
+        base_text = _post_chat(base_chat_url, args.model or base_model, prompt)
         print(f"BASE: {base_text}")
 
     if args.mode in {"ft", "both"}:
-        print(f"FT models_url={ft_models_url}")
-        print(f"FT chat_url={ft_chat_url}")
+        print("MODE=ft")
+        print(f"models_url={ft_models_url}")
+        print(f"chat_url={ft_chat_url}")
         _wait_ready(ft_models_url, args.timeout_seconds)
-        ft_text = _post_chat(ft_chat_url, ft_model, prompt)
+        ft_text = _post_chat(ft_chat_url, args.model or ft_model, prompt)
         print(f"FT: {ft_text}")
 
 
