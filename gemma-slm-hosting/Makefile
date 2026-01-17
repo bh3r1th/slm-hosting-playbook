@@ -1,4 +1,9 @@
-.PHONY: help fmt lint test setup start-base start-ft start-both stop health smoke ab perf snapshot poc doctor
+ifneq (,$(wildcard .env))
+include .env
+export
+endif
+
+.PHONY: help fmt lint test setup start-base start-ft start-both stop health smoke ab perf snapshot poc doctor env
 
 SHELL := /bin/bash
 MODE ?= both
@@ -16,6 +21,16 @@ lint:
 
 test:
 	uv run pytest
+
+env:
+	@if [ ! -f .env ]; then cp .env.example .env; echo "Created .env from .env.example"; else echo ".env already exists"; fi
+	@echo "BASE_MODEL_ID=$${BASE_MODEL_ID:-}"
+	@echo "ADAPTER_PATH=$${ADAPTER_PATH:-}"
+	@echo "HOST=$${HOST:-}"
+	@echo "BASE_PORT=$${BASE_PORT:-}"
+	@echo "FT_PORT=$${FT_PORT:-}"
+	@echo "BASE_API_URL=$${BASE_API_URL:-}"
+	@echo "FT_API_URL=$${FT_API_URL:-}"
 
 setup:
 	mkdir -p runs/logs runs/pids runs/ab runs/perf runs/diag

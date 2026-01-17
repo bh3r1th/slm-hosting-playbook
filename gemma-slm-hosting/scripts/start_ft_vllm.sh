@@ -11,6 +11,15 @@ pid_file="$pid_dir/ft.pid"
 # shellcheck source=lib_env.sh
 . "$script_dir/lib_env.sh"
 load_env
+if [ -f "$repo_root/.env" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  . "$repo_root/.env"
+  set +a
+fi
+if [ ! -f "$repo_root/.env" ]; then
+  echo "Missing .env at $repo_root/.env. Run: make env" >&2
+fi
 
 eval "$(python "$script_dir/read_pointer.py")"
 
