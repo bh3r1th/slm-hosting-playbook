@@ -1,0 +1,10 @@
+{"id":"p01","messages":[{"role":"user","content":"Give a one-sentence summary of what vLLM does."}]}
+{"id":"p02","messages":[{"role":"user","content":"List three benefits of using LoRA, in bullet points."}]}
+{"id":"p03","messages":[{"role":"user","content":"Rewrite this in plain English: 'The contract shall be null and void upon termination.'"}]}
+{"id":"p04","messages":[{"role":"user","content":"Convert 68 F to C and show the formula."}]}
+{"id":"p05","messages":[{"role":"user","content":"Write a two-line haiku about servers."}]}
+{"id":"p06","messages":[{"role":"user","content":"You are a support agent. Draft a 3-sentence reply acknowledging a brief outage and that it is resolved."}]}
+{"id":"p07","messages":[{"role":"user","content":"Summarize the key ideas of zero-shot learning in 2 sentences."}]}
+{"id":"p08","messages":[{"role":"user","content":"Domain prompt: As a cloud cost analyst, suggest two ways to cut GPU inference spend."}]}
+{"id":"p09","messages":[{"role":"user","content":"Domain prompt: As an SRE, outline a minimal on-call runbook step list for a chat API outage."}]}
+{"id":"p10","messages":[{"role":"user","content":"Return JSON with keys answer and confidence for: What is 5 * (7 + 3)?"}]}

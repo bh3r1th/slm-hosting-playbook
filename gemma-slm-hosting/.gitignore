@@ -11,7 +11,7 @@ __pycache__/
 
 # Data/results
 *.log
-*.jsonl
+#*.jsonl
 *.csv
 *.parquet
 results/
