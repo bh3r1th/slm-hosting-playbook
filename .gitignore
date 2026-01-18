@@ -52,3 +52,12 @@ runs/
 
 # training pointers
 gemma-slm-training/PHASE2_MODEL_POINTER.txt
+
+# allow committing PoC run bundle (inside gemma-slm-hosting)
+!gemma-slm-hosting/artifacts/
+!gemma-slm-hosting/artifacts/poc_run/
+!gemma-slm-hosting/artifacts/poc_run/**
+
+# override global *.log ignore for this folder
+!gemma-slm-hosting/artifacts/poc_run/**/*.log
+!gemma-slm-hosting/artifacts/poc_run/*.log
